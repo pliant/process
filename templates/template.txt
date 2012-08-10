@@ -1,0 +1,6 @@
+	
+	public Object invoke(MARGS) {
+		return invoke(InvokerFactory.invoker(CARGS));
+	}
+	
+	

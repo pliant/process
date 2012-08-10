@@ -1,0 +1,4 @@
+	public static Invoker invoke(MARGS) {
+		return new CNAME(CARGS);
+	}
+

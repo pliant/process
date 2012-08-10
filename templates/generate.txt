@@ -1,0 +1,41 @@
+(use '[clojure.string :only (join replace)])
+
+
+(def indexes (range 1 22))
+(def arg "arg")
+
+(defn margs
+ [index]
+ (join ", " (map #(str "Object " arg %) (range 1 index))))
+
+(defn cargs
+ [index]
+ (join ", " (map #(str arg %) (range 1 index))))
+
+(defn fargs
+ [index]
+ (join ", " (map #(str "Util.ret1(" arg % "," arg % "=null)") (range 1 index))))
+
+(defn aargs
+ [index]
+ (join "\r" (map #(str "\t\t\t\tthis." arg % "=" arg % ";") (range 1 index))))
+
+(defn cname
+ [index]
+ (str "Invoker" (- index 1)))
+ 
+(defn replace-args
+  [source range]
+  (map #(let [m (margs %)
+              c (cargs %)
+              f (fargs %)
+              a (aargs %)
+              cn (cname %)]
+          (replace (replace (replace (replace (replace source "CARGS" c) "FARGS" f) "MARGS" m) "AARGS" a) "CNAME" cn)) range))
+
+(def processtemplate (replace-args (slurp "/temp/processtmp.txt") indexes))
+(spit "/temp/processtemplate.txt" (apply str (replace-args (slurp "/temp/processtmp.txt") indexes)))
+(spit "/temp/processinvokers.txt" (apply str (replace-args (slurp "/temp/invokerclass.txt") indexes)))
+
+(spit "/temp/processtemplate.txt" (apply str processtemplate))
+(spit "/temp/processinvokers.txt" (apply str processinvokers))

@@ -1,0 +1,18 @@
+
+class CNAME implements Invoker{
+	private Object CARGS;
+	
+	CNAME(MARGS) {
+		super();
+AARGS
+	}
+	
+	@Override
+	public Object invoke(IFn fn) {
+		return fn.invoke(CARGS);
+	}
+	@Override
+	public Object invokeFinal(IFn fn) {
+		return fn.invoke(FARGS);
+	}
+}
