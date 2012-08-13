@@ -130,7 +130,25 @@ Control Flow Function            | Instruction
 (deflayer myprocess myskipback
   [arg1 arg2] 
   (if (= arg1 arg2) 
-    (skipback (fn [val] (if val "Yes" "Nope")) mycontinure) 
+    (skipback (fn [val] (if val "Yes" "Nope")) mycontinue) 
     (continue)))
 ```
+
+## Process As Method
+
+In order to combine the patterns that multimethod and process provide, the *pliant.process/as-method* function enables integration between the two.
+
+```clojure
+user=>(defmulti handle-http uri->process) ;; uri->keyword changes an http request uri to a keyword
+
+user=>(defprocess root [request] (redirect "/login"))
+user=>(defprocess login [request] (render-login))
+
+user=>(as-method root handle-http :get)
+user=>(as-method login handle-http :get-login)
+
+user=>(deflayer login shib-login [request] (if (auth/use-shib? request) (redirect-to-shib request) (continue))
+```
+
+
 
