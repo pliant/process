@@ -139,15 +139,15 @@ Control Flow Function            | Instruction
 In order to combine the patterns that multimethod and process provide, the *pliant.process/as-method* function enables integration between the two.
 
 ```clojure
-user=>(defmulti handle-http uri->process) ;; uri->keyword changes an http request uri to a keyword
+(defmulti handle-http uri->process) ;; uri->keyword psuedo fn to change a http request uri to a keyword
 
-user=>(defprocess root [request] (redirect "/login"))
-user=>(defprocess login [request] (render-login))
+(defprocess root [request] (redirect "/login"))
+(defprocess login [request] (render-login))
 
-user=>(as-method root handle-http :get)
-user=>(as-method login handle-http :get-login)
+(as-method root handle-http :get)
+(as-method login handle-http :get-login)
 
-user=>(deflayer login shib-login [request] (if (auth/use-shib? request) (redirect-to-shib request) (continue))
+(deflayer login shib-login [request] (if (auth/use-shib? request) (redirect-to-shib request) (continue))
 ```
 
 
