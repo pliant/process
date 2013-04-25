@@ -87,7 +87,7 @@ public class ProcessFn extends AFn{
 	 * @return
 	 */
 	Object callback(LinkedList<ICallback> callbacks, Object value){
-		if(callbacks != null && callbacks.size() > 0){
+		while (callbacks != null && callbacks.size() > 0){
 			value = callbacks.removeLast().invoke(value);
 		}
 		return value;
