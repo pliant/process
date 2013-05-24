@@ -41,7 +41,8 @@ public class ProcessFn extends AFn{
 
 	/**
 	 * Adds a layer to the process.
-	 * @param qualifiedName The fully qualified name of the layer.
+	 * @param namespace The namespace the function lives in..
+	 * @param name The name of the function.
 	 * @param layerFn The layer function.
 	 * @return The layer function that was passed in.
 	 */
