@@ -1,4 +1,5 @@
-(ns pliant.process)
+(ns pliant.process
+  (:refer-clojure :exclude [last]))
 
 (defmacro defprocess
   "Creates a new process with the associated default function.
@@ -34,30 +35,42 @@
        (. ~(with-meta processfn {:tag 'pliant.process.lang.ProcessFn}) addLayer ~*ns* ~(name layer-name) (fn ~@fn-tail)))))
 
 (defn as-method
-  [process multi dispatch-val]
+  [process ^clojure.lang.MultiFn multi dispatch-val]
   (. multi addMethod dispatch-val process))
 
 (defn continue
-  "Creates a return value to tell the process dispatcher to execute the next"
+  "Creates a return value to tell the process dispatcher to execute the next process."
   []
   (new pliant.process.lang.Continue))
 
 (defn skip
-  "Creates a return value to tell the process dispatcher to execute the next"
+  "Creates a return value to tell the process dispatcher to execute the next process, skipping any processes that have been provided."
   [& skips]
   (new pliant.process.lang.Skip skips))
 
 (defn skipback
-  "Creates a return value to tell the process dispatcher to execute the next"
+  "Creates a return value to tell the process dispatcher to execute the next process, skipping any processes that have been provide, 
+   and then execute a function on the return value of the last process."
   [call & skips]
   (new pliant.process.lang.Skipback call skips))
 
 (defn callback
-  "Creates a return value to tell the process dispatcher to execute the next"
+  "Creates a return value to tell the process dispatcher to execute the next process, then execute a function on the return value of 
+   then last process."
   [call]
   (new pliant.process.lang.Callback call))
 
 (defn before
-  "Creates a return value to tell the process dispatcher to execute the next"
-  [process fn1 fn2]
-  (. process before fn1 fn2))
+  "Re-orders the process layers so that the first processes layer is executed befor the second process layer."
+  [^pliant.process.lang.ProcessFn process layer1 layer2]
+  (. process before layer1 layer2))
+
+(defn first
+  "Re-orders the process layers so that the provided layer is executed first."
+  [^pliant.process.lang.ProcessFn process layer-fn]
+  (. process first layer-fn))
+
+(defn last
+  "Re-orders the process layers so that the provided layer is executed last."
+  [^pliant.process.lang.ProcessFn process layer-fn]
+  (. process last layer-fn))

@@ -1,4 +1,5 @@
 (ns pliant.test.process
+  (:refer-clojure :exclude [first last])
   (:use [pliant.process]
         [clojure.test]))
   
@@ -79,6 +80,29 @@
 (deftest test-process-skip
   (is (= 0 (process-skip 0)))
   (is (= 0 (process-skip 1))))
+
+;; Test ordering of processes
+(defprocess process-order-first [] 0)
+
+(deflayer process-order-first process-order-first-layer1 [] 1)
+
+(deflayer process-order-first process-order-first-layer2 [] 2)
+
+(first process-order-first process-order-first-layer2)
+
+(deftest test-process-order-first
+  (is (= 2 (process-order-first))))
+
+(defprocess process-order-last [] 0)
+
+(deflayer process-order-last process-order-last-layer1 [] 1)
+
+(deflayer process-order-last process-order-last-layer2 [] 2)
+
+(last process-order-last process-order-last-layer1)
+
+(deftest test-process-order-first
+  (is (= 2 (process-order-last))))
 
 ;; Test a process skips a layer and uses a callback.
 (defprocess process-skipback

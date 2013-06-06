@@ -80,6 +80,41 @@ public class ProcessFn extends AFn{
 		}
 		layers = temp;
 	}
+
+    
+	/**
+	 * Reorders the layers so that the layer with the provided function executes first.
+	 * @param fn
+	 */
+	public void first(IFn fn){
+		for(int i = 0; i < layers.size(); i++){
+			ILayer layer = layers.get(i);
+			if(layer.getFn() == fn){
+				if(i != 0){
+					layer = layers.remove(i);
+					layers.add(0, layer);
+				}
+				return;
+			}
+		}
+	}
+
+	/**
+	 * Reorders the layers so that the layer with the provided function executes last.
+	 * @param fn
+	 */
+	public void last(IFn fn){
+		for(int i = 0; i < layers.size(); i++){
+			ILayer layer = layers.get(i);
+			if(layer.getFn() == fn){
+				if(i != (layers.size() - 1)){
+					layer = layers.remove(i);
+					layers.add(layer);
+				}
+				return;
+			}
+		}
+	}
 	
 	/**
 	 * Process any callbacks that have been requested.
