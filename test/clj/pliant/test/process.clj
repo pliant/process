@@ -2,10 +2,10 @@
   (:refer-clojure :exclude [first last])
   (:use [pliant.process]
         [clojure.test]))
-  
+
 
 ;; Test a basic process execution.
-(defprocess process-only 
+(defprocess process-only
   [flag]
   0)
 
@@ -13,43 +13,43 @@
   (is (= 0 (process-only 0))))
 
 ;; Test a processes overridden by a layer.
-(defprocess process-overridden 
+(defprocess process-overridden
   [flag]
   0)
 
 (deflayer process-overridden process-overridden-layer
-  [flag] 
-  (if (= 1 flag) 
+  [flag]
+  (if (= 1 flag)
     1
     2))
 
-(deftest test-process-overridden 
+(deftest test-process-overridden
   (is (= 2 (process-overridden 0)))
   (is (= 1 (process-overridden 1))))
 
 ;; Test a process extended by a layer using continue
-(defprocess process-next 
+(defprocess process-next
   [flag]
   0)
 
 (deflayer process-next process-continue
-  [flag] 
-  (if (= 1 flag) 
+  [flag]
+  (if (= 1 flag)
     1
     (continue)))
 
-(deftest test-process-next 
+(deftest test-process-next
   (is (= 0 (process-next 0)))
   (is (= 1 (process-next 1))))
 
 ;; Test a process that uses a callback
-(defprocess process-callback 
+(defprocess process-callback
   [flag]
   0)
 
 (deflayer process-callback process-callback-layer
-  [flag] 
-  (if (= 1 flag) 
+  [flag]
+  (if (= 1 flag)
     1
     (callback (fn [flag] 2))))
 
@@ -59,23 +59,23 @@
 
 
 ;; Test a process that skips layers
-(defprocess process-skip 
+(defprocess process-skip
   [flag]
   0)
 
 (deflayer process-skip process-skip-layer1
-  [flag] 
-  (if (= 1 flag) 
+  [flag]
+  (if (= 1 flag)
     1
     (continue)))
 
 (deflayer process-skip process-skip-layer2
-  [flag] 
-  (if (= 1 flag) 
+  [flag]
+  (if (= 1 flag)
     (skip process-skip-layer1)
     (continue)))
 
-(before process-skip process-skip-layer2 process-skip-layer1)
+(do-before process-skip process-skip-layer2 process-skip-layer1)
 
 (deftest test-process-skip
   (is (= 0 (process-skip 0)))
@@ -88,7 +88,7 @@
 
 (deflayer process-order-first process-order-first-layer2 [] 2)
 
-(first process-order-first process-order-first-layer2)
+(do-first process-order-first process-order-first-layer2)
 
 (deftest test-process-order-first
   (is (= 2 (process-order-first))))
@@ -99,7 +99,7 @@
 
 (deflayer process-order-last process-order-last-layer2 [] 2)
 
-(last process-order-last process-order-last-layer1)
+(do-last process-order-last process-order-last-layer1)
 
 (deftest test-process-order-first
   (is (= 2 (process-order-last))))
@@ -110,18 +110,18 @@
   0)
 
 (deflayer process-skipback process-skipback-layer1
-  [flag] 
-  (if (= 1 flag) 
+  [flag]
+  (if (= 1 flag)
     1
     (continue)))
 
 (deflayer process-skipback process-skipback-layer2
-  [flag] 
-  (if (= 1 flag) 
+  [flag]
+  (if (= 1 flag)
     (skipback (fn [f] 3) process-skipback-layer1)
     (continue)))
 
-(before process-skipback process-skipback-layer2 process-skipback-layer1)
+(do-before process-skipback process-skipback-layer2 process-skipback-layer1)
 
 (deftest test-process-skipback
   (is (= 0 (process-skipback 0)))
