@@ -1,4 +1,4 @@
-(defproject pliant/process "0.1.2"
+(defproject pliant/process "0.1.3-SNAPSHOT"
   :description "Defines all of the process functions and macros."
   
   :url "https://github.com/pliant/process"
