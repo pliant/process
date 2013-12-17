@@ -9,6 +9,9 @@
   :java-source-paths ["src/java"]
   :test-paths ["test/clj"]
   
+  :javac-options     ["-target" "1.6" "-source" "1.6"]
+  :min-lein-version "2.0.0"
+  
   ;; Keep java source and project definition out of the artifact
   :jar-exclusions [#"^\." #"^*\/\." #"\.java$" #"project\.clj"]
   
